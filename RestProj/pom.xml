@@ -44,7 +44,7 @@
            	<contextPath>/${project.build.finalName}</contextPath>
           	<war>${build.directory}/${project.build.finalName}.war</war>
           </webApp>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <scanIntervalSeconds>1</scanIntervalSeconds>
           <connectors>
             <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
               <port>8080</port>
@@ -71,6 +71,11 @@
     	<groupId>org.slf4j</groupId>
     	<artifactId>slf4j-simple</artifactId>
     	<version>1.7.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.sun.jersey</groupId>
+    	<artifactId>jersey-client</artifactId>
+    	<version>1.17.1</version>
     </dependency>
   </dependencies>
 </project>
