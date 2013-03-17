@@ -14,7 +14,7 @@ public class HelloWorldService {
 	@Path("/{param}")
 	public Response getMsg(@PathParam("param") String msg) {
 		// http://localhost:8080/RestProj/rest/hello/yo
-		String output = "Jersey say ff  : " + msg;
+		String output = "Jersey say  : " + msg;
 		return Response.status(200).entity(output).build();
 	}
 
