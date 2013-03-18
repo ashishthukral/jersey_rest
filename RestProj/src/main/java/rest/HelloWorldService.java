@@ -50,7 +50,7 @@ public class HelloWorldService {
 	}
 
 	@POST
-	@Path("/post")
+	@Path("/postjson")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createTrackInJSON(String iCarJson) {

@@ -2,6 +2,7 @@ package rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -13,20 +14,26 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 public class JerseyClient {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, UniformInterfaceException, ClientHandlerException, IOException {
 		JerseyClient theJerseyClient = new JerseyClient();
 		theJerseyClient.jerseyTest();
 		theJerseyClient.jaxbTest();
-
 	}
 
 	/*
@@ -43,7 +50,7 @@ public class JerseyClient {
 	 * 
 	 * No Response 204
 	 */
-	private void jerseyTest() {
+	private void jerseyTest() throws JsonGenerationException, JsonMappingException, UniformInterfaceException, ClientHandlerException, IOException {
 		ClientConfig config = new DefaultClientConfig();
 		Client client = Client.create(config);
 		WebResource theWebResource = client.resource(getBaseURI());
@@ -69,8 +76,15 @@ public class JerseyClient {
 
 		Car car = new Car(1, "audi");
 		Gson gson = new Gson();
-		String json = gson.toJson(car);
-		response = theWebResource.path("rest").path("hello").path("post").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
+		// String json = gson.toJson(car);
+		// response = theWebResource.path("rest").path("hello").path("postjson").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
+
+		ObjectMapper mapper = new ObjectMapper();
+		// mapper.setVisibilityChecker(mapper.getSerializationConfig().getDefaultVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+		// .withGetterVisibility(JsonAutoDetect.Visibility.NONE).withSetterVisibility(JsonAutoDetect.Visibility.NONE).withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+		mapper.setVisibilityChecker(mapper.getSerializationConfig().getDefaultVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+				.withGetterVisibility(JsonAutoDetect.Visibility.NONE));
+		response = theWebResource.path("rest").path("hello").path("postjson").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, mapper.writeValueAsString(car));
 
 		if (response.getStatus() != 201) {
 			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + "=" + response.getClientResponseStatus().getReasonPhrase());
@@ -115,27 +129,23 @@ public class JerseyClient {
 		try {
 			// create JAXB context and instantiate marshaller
 			JAXBContext context = JAXBContext.newInstance(Bookstore.class);
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			Marshaller theMarshaller = context.createMarshaller();
+			theMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 			// Write to System.out
 			// m.marshal(bookstore, System.out);
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			m.marshal(bookstore, baos);
-			String jaxb = baos.toString();
-			System.out.println(jaxb);
+			theMarshaller.marshal(bookstore, baos);
+			String jaxbString = baos.toString();
+			System.out.println("Output from Marshaller");
+			System.out.println(jaxbString);
 
-			InputStream is = new ByteArrayInputStream(jaxb.getBytes());
-
-			// Write to File
-			// m.marshal(bookstore, new File(BOOKSTORE_XML));
-
+			InputStream theInputStream = new ByteArrayInputStream(jaxbString.getBytes());
 			// get variables from our xml file, created before
-			System.out.println();
-			System.out.println("Output from our XML File: ");
-			Unmarshaller um = context.createUnmarshaller();
-			Bookstore bookstore2 = (Bookstore) um.unmarshal(is);
+			System.out.println("Output from Un-Marshaller");
+			Unmarshaller theUnmarshaller = context.createUnmarshaller();
+			Bookstore bookstore2 = (Bookstore) theUnmarshaller.unmarshal(theInputStream);
 			ArrayList<Book> list = bookstore2.getBooksList();
 			for (Book book : list) {
 				System.out.println("Book: " + book.getName() + " from " + book.getAuthor());

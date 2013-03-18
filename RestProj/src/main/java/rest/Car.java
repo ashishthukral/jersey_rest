@@ -2,6 +2,9 @@ package rest;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Car implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -18,6 +21,8 @@ public class Car implements Serializable {
 	private Integer _id;
 	private String _name;
 
+	// jaxson jersey annotations
+	// @JsonProperty("_id")
 	public Integer getId() {
 		return _id;
 	}
@@ -26,6 +31,7 @@ public class Car implements Serializable {
 		_id = iId;
 	}
 
+	// @JsonProperty("_name")
 	public String getName() {
 		return _name;
 	}
