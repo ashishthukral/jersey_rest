@@ -35,7 +35,7 @@
       	<version>8.1.9.v20130131</version>
       	<configuration>
       	  <webApp>
-           	<contextPath>/${project.build.finalName}</contextPath>
+           	<contextPath>/api</contextPath>
           	<war>${project.build.directory}/${project.build.finalName}.war</war>
           </webApp>
           <scanIntervalSeconds>1</scanIntervalSeconds>

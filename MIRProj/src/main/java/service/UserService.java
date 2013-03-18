@@ -1,4 +1,6 @@
-package rest;
+package service;
+
+import java.io.IOException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -9,8 +11,43 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/hello")
-public class HelloWorldService {
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import common.CommonObjectMapper;
+
+import domain.User;
+
+@Path("/user")
+public class UserService {
+
+	ObjectMapper _objectMapper = CommonObjectMapper.INSTANCE.getObjectMapper();
+
+	@POST
+	@Path("create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response createUser(String iUserJson) {
+		Integer theId = 3;
+		String theResult = "{\"id\":" + theId + ",\"success\":true}";
+		try {
+			User anUser = _objectMapper.readValue(iUserJson, User.class);
+			System.out.println(iUserJson);
+			System.out.println(anUser);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Response.status(201).entity(theResult).build();
+
+	}
 
 	@GET
 	@Path("{message}")
