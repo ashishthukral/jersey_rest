@@ -1,0 +1,3 @@
+// firstName,lastName,emailAddress,phoneNumber
+Tony,Nguyen,tony.nguyen@acme.com,8583361993
+John,Doe,john.doe@acme.com,8585551212

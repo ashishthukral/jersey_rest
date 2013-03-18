@@ -1,7 +1,12 @@
 package client;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -36,11 +41,38 @@ public class JerseyClient {
 
 	public static void main(String[] args) {
 		JerseyClient theJerseyClient = new JerseyClient();
+		theJerseyClient.readFile();
 		LOG.info("new user Id=" + theJerseyClient.userCreate());
 		LOG.info(theJerseyClient.getUserById(666));
 		theJerseyClient.userUpdate(987);
 		theJerseyClient.deleteUserById(123);
+	}
 
+	private Set<User> readFile() {
+		// HELPFUL TIP - use to print current path where executing
+		// System.out.println(new File(".").getAbsolutePath());
+		// Location of file to read
+		File file = new File("src/main/resources/users.txt");
+		Set<User> theUserSet = new HashSet<>();
+		try {
+			User anUser;
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				System.out.println(line);
+				// skips lines starting with //, to treat them as chars
+				if (line.startsWith("//"))
+					continue;
+				String[] userDetails = line.split(",");
+				anUser = new User(null, userDetails[0] + " " + userDetails[1], userDetails[0], userDetails[1], userDetails[2], Long.valueOf(userDetails[3]));
+				theUserSet.add(anUser);
+			}
+			scanner.close();
+			System.out.println(theUserSet);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return theUserSet;
 	}
 
 	private Integer userCreate() {
