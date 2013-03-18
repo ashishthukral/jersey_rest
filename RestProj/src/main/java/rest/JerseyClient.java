@@ -60,7 +60,7 @@ public class JerseyClient {
 		response = theWebResource.path("rest").path("hello").path("post").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
 
 		if (response.getStatus() != 201) {
-			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + "=" + response.getClientResponseStatus().getReasonPhrase());
 		}
 
 		System.out.println("Output from Server .... \n");
