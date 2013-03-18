@@ -50,7 +50,7 @@ public class JerseyClient {
 
 	private static URI getBaseURI() {
 		// CASE-SENSITIVE URI
-		return UriBuilder.fromUri("http://localhost:8080/RestProj").build();
+		return UriBuilder.fromUri("http://localhost:8080/MIRProj").build();
 	}
 
 }

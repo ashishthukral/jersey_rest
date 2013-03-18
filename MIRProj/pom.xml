@@ -7,6 +7,8 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>MIRProj Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <!-- Use below from terminal to generate dependency tree and see what jar generated what OR open pom.xml in eclispe in maven editor and see tree-->
+  <!-- mvn dependency:tree -Dverbose -->
   <repositories>
 		<repository>
 			<id>maven2-repository.java.net</id>
@@ -34,7 +36,7 @@
       	<configuration>
       	  <webApp>
            	<contextPath>/${project.build.finalName}</contextPath>
-          	<war>${build.directory}/${project.build.finalName}.war</war>
+          	<war>${project.build.directory}/${project.build.finalName}.war</war>
           </webApp>
           <scanIntervalSeconds>1</scanIntervalSeconds>
           <connectors>
@@ -44,6 +46,14 @@
             </connector>
           </connectors>
         </configuration>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-surefire-plugin</artifactId>
+      	<version>2.14</version>
+      	<configuration>
+			<skipTests>true</skipTests>
+		</configuration>
       </plugin>
     </plugins>
   </build>
@@ -58,11 +68,6 @@
     	<groupId>com.sun.jersey</groupId>
     	<artifactId>jersey-server</artifactId>
     	<version>1.8</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-simple</artifactId>
-    	<version>1.7.2</version>
     </dependency>
     <dependency>
     	<groupId>com.sun.jersey</groupId>
