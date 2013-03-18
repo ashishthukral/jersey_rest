@@ -54,7 +54,7 @@ public class UserService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return Response.status(201).entity(aResponseObjectJson).build();
+		return Response.status(Response.Status.CREATED).entity(aResponseObjectJson).build();
 	}
 
 	/*
@@ -78,7 +78,7 @@ public class UserService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return Response.status(200).entity(aResponseObjectJson).build();
+		return Response.status(Response.Status.OK).entity(aResponseObjectJson).build();
 	}
 
 	/*
@@ -107,7 +107,7 @@ public class UserService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return Response.status(200).entity(aResponseObjectJson).build();
+		return Response.status(Response.Status.ACCEPTED).entity(aResponseObjectJson).build();
 	}
 
 	/*
@@ -131,6 +131,6 @@ public class UserService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return Response.status(200).entity(aResponseObjectJson).build();
+		return Response.status(Response.Status.ACCEPTED).entity(aResponseObjectJson).build();
 	}
 }

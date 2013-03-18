@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.log4j.Logger;
@@ -48,8 +49,7 @@ public class JerseyClient {
 		try {
 			ClientResponse aClientResponse = _webResource.path("user").path("create").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 					.post(ClientResponse.class, OBJECT_MAPPER.writeValueAsString(anUser));
-			// 201=CREATED
-			if (aClientResponse.getStatus() != 201) {
+			if (aClientResponse.getStatus() != Response.Status.CREATED.getStatusCode()) {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}
 
@@ -70,8 +70,7 @@ public class JerseyClient {
 		try {
 			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).accept(MediaType.APPLICATION_JSON)
 					.get(ClientResponse.class);
-			// 200=OK
-			if (aClientResponse.getStatus() != 200) {
+			if (aClientResponse.getStatus() != Response.Status.OK.getStatusCode()) {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}
 
@@ -92,8 +91,7 @@ public class JerseyClient {
 		try {
 			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 					.post(ClientResponse.class, OBJECT_MAPPER.writeValueAsString(anUser));
-			// 200=OK
-			if (aClientResponse.getStatus() != 200) {
+			if (aClientResponse.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}
 			String theResponse = aClientResponse.getEntity(String.class);
@@ -108,8 +106,7 @@ public class JerseyClient {
 		try {
 			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).accept(MediaType.APPLICATION_JSON)
 					.delete(ClientResponse.class);
-			// 200=OK
-			if (aClientResponse.getStatus() != 200) {
+			if (aClientResponse.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}
 
