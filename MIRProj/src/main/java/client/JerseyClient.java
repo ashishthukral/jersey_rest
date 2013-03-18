@@ -33,34 +33,15 @@ public class JerseyClient {
 
 	public static void main(String[] args) {
 		JerseyClient theJerseyClient = new JerseyClient();
-		System.out.println("new user Id=" + theJerseyClient.userCreate());
-		System.out.println(theJerseyClient.getUserById(666));
-	}
+		// System.out.println("new user Id=" + theJerseyClient.userCreate());
+		// System.out.println(theJerseyClient.getUserById(666));
+		theJerseyClient.userUpdate(987);
 
-	private User getUserById(Integer iUserId) {
-		User anUser = null;
-		try {
-			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).get(ClientResponse.class);
-			// 200=OK
-			if (aClientResponse.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
-			}
-
-			String theResponseJson = aClientResponse.getEntity(String.class);
-			System.out.println("getUserById - Response Json String");
-			System.out.println(theResponseJson);
-			ResponseObject aResponseObject = _objectMapper.readValue(theResponseJson, ResponseObject.class);
-			anUser = aResponseObject.getUser();
-			// System.out.println(aResponseObject);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return anUser;
 	}
 
 	private Integer userCreate() {
 		Integer theUserId = null;
-		User anUser = new User(null, "stallone", "john", "rambo", "rambo@gmail.com", 6663331234L);
+		User anUser = new User(null, "stallone", "john", "rambo", "rambo@gmail.com", 666_333_1234L);
 		try {
 			ClientResponse aClientResponse = _webResource.path("user").path("create").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 					.post(ClientResponse.class, _objectMapper.writeValueAsString(anUser));
@@ -79,6 +60,45 @@ public class JerseyClient {
 			e.printStackTrace();
 		}
 		return theUserId;
+	}
+
+	private User getUserById(Integer iUserId) {
+		User anUser = null;
+		try {
+			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).accept(MediaType.APPLICATION_JSON)
+					.get(ClientResponse.class);
+			// 200=OK
+			if (aClientResponse.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
+			}
+
+			String theResponseJson = aClientResponse.getEntity(String.class);
+			System.out.println("getUserById - Response Json String");
+			System.out.println(theResponseJson);
+			ResponseObject aResponseObject = _objectMapper.readValue(theResponseJson, ResponseObject.class);
+			anUser = aResponseObject.getUser();
+			// System.out.println(aResponseObject);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return anUser;
+	}
+
+	private void userUpdate(Integer iUserId) {
+		User anUser = new User(null, "arnold", "Terminator", "machine", "arnold@gmail.com", 111_222_3456L);
+		try {
+			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+					.post(ClientResponse.class, _objectMapper.writeValueAsString(anUser));
+			// 200=OK
+			if (aClientResponse.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
+			}
+			String theResponse = aClientResponse.getEntity(String.class);
+			System.out.println("userUpdate - Response Json String");
+			System.out.println(theResponse);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static URI getBaseURI() {
