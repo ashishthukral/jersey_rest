@@ -6,19 +6,16 @@ import java.net.URI;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import common.CommonObjectMapper;
 
+import domain.ResponseObject;
 import domain.User;
 
 public class JerseyClient {
@@ -34,7 +31,27 @@ public class JerseyClient {
 
 	public static void main(String[] args) {
 		JerseyClient theJerseyClient = new JerseyClient();
-		theJerseyClient.userCreate();
+		// theJerseyClient.userCreate();
+		theJerseyClient.getUserById();
+	}
+
+	private void getUserById() {
+		try {
+			ClientResponse aClientResponse = _webResource.path("user").path("666").type(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+			// 200=OK
+			if (aClientResponse.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
+			}
+
+			String theResponseJson = aClientResponse.getEntity(String.class);
+			System.out.println("Response Json String");
+			System.out.println(theResponseJson);
+			ResponseObject aResponseObject = _objectMapper.readValue(theResponseJson, ResponseObject.class);
+			System.out.println(aResponseObject);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void userCreate() {
@@ -47,24 +64,12 @@ public class JerseyClient {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}
 
-			System.out.println("Response Json String");
 			String theResponseJson = aClientResponse.getEntity(String.class);
+			System.out.println("Response Json String");
 			System.out.println(theResponseJson);
-
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UniformInterfaceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientHandlerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ResponseObject aResponseObject = _objectMapper.readValue(theResponseJson, ResponseObject.class);
+			System.out.println(aResponseObject);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
