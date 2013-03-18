@@ -9,8 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.gson.Gson;
-
 @Path("/hello")
 public class HelloWorldService {
 
@@ -55,10 +53,7 @@ public class HelloWorldService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createTrackInJSON(String iCarJson) {
 		System.out.println(iCarJson.toString());
-		Gson gson = new Gson();
-		Car car = gson.fromJson(iCarJson, Car.class);
-		System.out.println(car.toString());
-		String result = gson.toJson(new Car(2, "bmw"));
+		String result = "";
 		return Response.status(201).entity(result).build();
 	}
 
