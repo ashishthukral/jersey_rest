@@ -8,11 +8,11 @@ import common.CommonUtil;
 
 import domain.User;
 
-public enum UserDao {
+public enum UserDaoImpl {
 	USER_DAO_INSTANCE;
 
 	private Map<Integer, User> _dbUserMap = CommonUtil.INSTANCE.getDbUserMap();
-	private final static Logger LOG = Logger.getLogger(UserDao.class);
+	private final static Logger LOG = Logger.getLogger(UserDaoImpl.class);
 	private static Integer NEXT_USER_ID = 4;
 
 	public Integer createUser(User iUser) {

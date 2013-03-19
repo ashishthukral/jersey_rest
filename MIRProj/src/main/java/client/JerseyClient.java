@@ -40,12 +40,47 @@ public class JerseyClient {
 	}
 
 	public static void main(String[] args) {
+		User anUser = new User(null, "stallone", "john", "rambo", "rambo@gmail.com", 666_333_1234L);
 		JerseyClient theJerseyClient = new JerseyClient();
 		theJerseyClient.readFile();
-		LOG.info("new user Id=" + theJerseyClient.userCreate());
+		LOG.info("new user Id=" + theJerseyClient.userCreate(anUser));
 		LOG.info(theJerseyClient.getUserById(2));
-		theJerseyClient.userUpdate(1);
+		anUser = new User(2, "arnold", "Terminator", "machine", "arnold@gmail.com", 111_222_3456L);
+		theJerseyClient.userUpdate(anUser);
 		theJerseyClient.deleteUserById(3);
+		// theJerseyClient.sync();
+
+	}
+
+	// private void sync() {
+	// List<User> theAcmeUserList = readFile();
+	// for (User theAcmeUser : theAcmeUserList) {
+	// User theDBUser = getUserById(theAcmeUser.getId());
+	// // user not in db, so create new
+	// if (theDBUser == null) {
+	// userCreate(theAcmeUser);
+	// } // user in db, check for any new updated fields
+	// else {
+	// if (!areUsersEqual(theAcmeUser, theDBUser)) {
+	// userUpdate(theAcmeUser);
+	// }
+	// }
+	// LOG.info(theDBUser);
+	// }
+	// }
+
+	private boolean areUsersEqual(User iUserAcme, User iUserDB) {
+		boolean isEqual = true;
+		if (!iUserAcme.getFirstName().equals(iUserDB.getFirstName())) {
+			isEqual = false;
+		} else if (!iUserAcme.getLastName().equals(iUserDB.getLastName())) {
+			isEqual = false;
+		} else if (!iUserAcme.getEmailAddress().equals(iUserDB.getEmailAddress())) {
+			isEqual = false;
+		} else if (!iUserAcme.getPhoneNumber().equals(iUserDB.getPhoneNumber())) {
+			isEqual = false;
+		}
+		return isEqual;
 	}
 
 	private List<User> readFile() {
@@ -57,30 +92,33 @@ public class JerseyClient {
 		try {
 			User anUser;
 			Scanner scanner = new Scanner(file);
+			// TODO
+			// remove artificial id addition
+			// Integer id = 1;
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				// System.out.println(line);
-				// skips lines starting with //, to treat them as chars
+				// skips lines starting with //, to treat them as comments
 				if (line.startsWith("//"))
 					continue;
 				String[] userDetails = line.split(",");
 				anUser = new User(null, userDetails[0] + " " + userDetails[1], userDetails[0], userDetails[1], userDetails[2], Long.valueOf(userDetails[3]));
+				// anUser = new User(id++, userDetails[0] + " " + userDetails[1], userDetails[0], userDetails[1], userDetails[2], Long.valueOf(userDetails[3]));
 				theAcmeFileUserList.add(anUser);
 			}
 			scanner.close();
-			System.out.println(theAcmeFileUserList);
+			LOG.info(theAcmeFileUserList);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		return theAcmeFileUserList;
 	}
 
-	private Integer userCreate() {
+	private Integer userCreate(User iUser) {
 		Integer theUserId = null;
-		User anUser = new User(null, "stallone", "john", "rambo", "rambo@gmail.com", 666_333_1234L);
 		try {
 			ClientResponse aClientResponse = _webResource.path("user").path("create").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class, OBJECT_MAPPER.writeValueAsString(anUser));
+					.post(ClientResponse.class, OBJECT_MAPPER.writeValueAsString(iUser));
 			if (aClientResponse.getStatus() != Response.Status.CREATED.getStatusCode()) {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}
@@ -118,11 +156,10 @@ public class JerseyClient {
 		return anUser;
 	}
 
-	private void userUpdate(Integer iUserId) {
-		User anUser = new User(null, "arnold", "Terminator", "machine", "arnold@gmail.com", 111_222_3456L);
+	private void userUpdate(User iUser) {
 		try {
-			ClientResponse aClientResponse = _webResource.path("user").path(iUserId.toString()).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class, OBJECT_MAPPER.writeValueAsString(anUser));
+			ClientResponse aClientResponse = _webResource.path("user").path(iUser.getId().toString()).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+					.post(ClientResponse.class, OBJECT_MAPPER.writeValueAsString(iUser));
 			if (aClientResponse.getStatus() != Response.Status.ACCEPTED.getStatusCode()) {
 				throw new RuntimeException("Failed : HTTP error code : " + aClientResponse.getStatus() + "=" + aClientResponse.getClientResponseStatus().getReasonPhrase());
 			}

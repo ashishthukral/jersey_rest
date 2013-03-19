@@ -17,7 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import common.CommonUtil;
 
-import dao.UserDao;
+import dao.UserDaoImpl;
 import domain.ResponseObject;
 import domain.User;
 
@@ -43,7 +43,7 @@ public class UserService {
 		String aResponseObjectJson = "null";
 		try {
 			User anUser = OBJECT_MAPPER.readValue(iUserJson, User.class);
-			Integer theId = UserDao.USER_DAO_INSTANCE.createUser(anUser);
+			Integer theId = UserDaoImpl.USER_DAO_INSTANCE.createUser(anUser);
 			anUser = new User();
 			anUser.setId(theId);
 			ResponseObject aResponseObject = new ResponseObject(anUser, "true");
@@ -66,7 +66,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserById(@PathParam("id") String iUserId) {
 		LOG.info("getUserById");
-		User anUser = UserDao.USER_DAO_INSTANCE.getUserById(Integer.valueOf(iUserId));
+		User anUser = UserDaoImpl.USER_DAO_INSTANCE.getUserById(Integer.valueOf(iUserId));
 		String aResponseObjectJson = "null";
 		try {
 			ResponseObject aResponseObject = new ResponseObject(anUser, "true");
@@ -96,7 +96,7 @@ public class UserService {
 		try {
 			User anUser = OBJECT_MAPPER.readValue(iUserJson, User.class);
 			anUser.setId(theId);
-			UserDao.USER_DAO_INSTANCE.userUpdate(anUser);
+			UserDaoImpl.USER_DAO_INSTANCE.userUpdate(anUser);
 			ResponseObject aResponseObject = new ResponseObject(null, "true");
 			aResponseObjectJson = OBJECT_MAPPER.writeValueAsString(aResponseObject);
 			LOG.info(aResponseObjectJson);
@@ -117,7 +117,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteUserById(@PathParam("id") String iUserId) {
 		LOG.info("deleteUserById");
-		UserDao.USER_DAO_INSTANCE.deleteUserById(Integer.valueOf(iUserId));
+		UserDaoImpl.USER_DAO_INSTANCE.deleteUserById(Integer.valueOf(iUserId));
 		String aResponseObjectJson = "null";
 		try {
 			ResponseObject aResponseObject = new ResponseObject(null, "true");
