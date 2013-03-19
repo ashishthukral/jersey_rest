@@ -59,7 +59,7 @@ public class JerseyClient {
 			Scanner scanner = new Scanner(file);
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				System.out.println(line);
+				// System.out.println(line);
 				// skips lines starting with //, to treat them as chars
 				if (line.startsWith("//"))
 					continue;
