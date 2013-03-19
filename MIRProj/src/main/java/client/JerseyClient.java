@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.sun.jersey.api.client.Client;
@@ -37,7 +37,8 @@ public class JerseyClient {
 	public JerseyClient() {
 		ClientConfig config = new DefaultClientConfig();
 		// config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-		config.getClasses().add(JacksonJsonProvider.class);
+		// it supports JAXB annotations as well as the default Jackson annotations
+		config.getClasses().add(JacksonJaxbJsonProvider.class);
 		Client client = Client.create(config);
 		_webResource = client.resource(SERVICE_URI);
 	}
