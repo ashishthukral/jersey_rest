@@ -148,11 +148,11 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getOtherUserPojoList(User iUser) {
 		LOG.info("getOtherUserPojoList");
-		Integer theUserId = iUser.getId();
 		Collection<User> theUsers = CommonUtil.INSTANCE.getDbUserMap().values();
 		List<User> finalUsers = new ArrayList<>();
 		for (User aUser : theUsers) {
-			if (!aUser.getId().equals(theUserId)) {
+			// as User equals() based on id field
+			if (!aUser.equals(iUser)) {
 				finalUsers.add(aUser);
 			}
 		}
