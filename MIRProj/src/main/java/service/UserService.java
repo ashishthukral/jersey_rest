@@ -1,6 +1,9 @@
 package service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -130,13 +133,29 @@ public class UserService {
 	}
 
 	@GET
-	@Path("test/{id}")
+	@Path("pojo/{id}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public User testGetUserById(@PathParam("id") Integer iUserId) {
-		LOG.info("testGetUserById");
+	public User getUserPojoById(@PathParam("id") Integer iUserId) {
+		LOG.info("getUserPojoById");
 		User anUser = UserDaoImpl.USER_DAO_INSTANCE.getUserById(iUserId);
-		anUser.setPhoneNumber(null);
 		return anUser;
+	}
+
+	@POST
+	@Path("pojo/list")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<User> getOtherUserPojoList(User iUser) {
+		LOG.info("getOtherUserPojoList");
+		Integer theUserId = iUser.getId();
+		Collection<User> theUsers = CommonUtil.INSTANCE.getDbUserMap().values();
+		List<User> finalUsers = new ArrayList<>();
+		for (User aUser : theUsers) {
+			if (!aUser.getId().equals(theUserId)) {
+				finalUsers.add(aUser);
+			}
+		}
+		return finalUsers;
 	}
 }

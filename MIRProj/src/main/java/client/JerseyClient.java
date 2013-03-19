@@ -52,11 +52,17 @@ public class JerseyClient {
 		// theJerseyClient.userUpdate(anUser);
 		// theJerseyClient.deleteUserById(3);
 		// theJerseyClient.sync();
-		LOG.info(theJerseyClient.testGetUserById(2));
+		// LOG.info(theJerseyClient.getUserPojoById(2));
+		LOG.info(theJerseyClient.getOtherUserPojoList(new User(2, null, null, null, null, null)));
 	}
 
-	private User testGetUserById(Integer iUserId) {
-		return _webResource.path("user").path("test").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).accept(MediaType.APPLICATION_JSON).get(User.class);
+	private User getUserPojoById(Integer iUserId) {
+		return _webResource.path("user").path("pojo").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).accept(MediaType.APPLICATION_JSON).get(User.class);
+	}
+
+	public List<User> getOtherUserPojoList(User iUser) {
+		List<User> users = _webResource.path("user").path("pojo/list").type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(List.class, iUser);
+		return users;
 	}
 
 	// private void sync() {
