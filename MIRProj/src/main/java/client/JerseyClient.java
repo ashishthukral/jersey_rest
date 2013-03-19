@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.sun.jersey.api.client.Client;
@@ -20,7 +21,6 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
 import common.CommonUtil;
 
 import domain.ResponseObject;
@@ -31,25 +31,32 @@ public class JerseyClient {
 	private WebResource _webResource;
 	private final static ObjectMapper OBJECT_MAPPER = CommonUtil.INSTANCE.getObjectMapper();
 	private final static Logger LOG = Logger.getLogger(JerseyClient.class);
+	// CASE-SENSITIVE URI
+	private final static URI SERVICE_URI = UriBuilder.fromUri("http://localhost:8080/api").build();
 
 	public JerseyClient() {
 		ClientConfig config = new DefaultClientConfig();
-		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+		// config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		config.getClasses().add(JacksonJsonProvider.class);
 		Client client = Client.create(config);
-		_webResource = client.resource(getBaseURI());
+		_webResource = client.resource(SERVICE_URI);
 	}
 
 	public static void main(String[] args) {
-		User anUser = new User(null, "stallone", "john", "rambo", "rambo@gmail.com", 666_333_1234L);
 		JerseyClient theJerseyClient = new JerseyClient();
-		theJerseyClient.readFile();
-		LOG.info("new user Id=" + theJerseyClient.userCreate(anUser));
-		LOG.info(theJerseyClient.getUserById(2));
-		anUser = new User(2, "arnold", "Terminator", "machine", "arnold@gmail.com", 111_222_3456L);
-		theJerseyClient.userUpdate(anUser);
-		theJerseyClient.deleteUserById(3);
+		// User anUser = new User(null, "stallone", "john", "rambo", "rambo@gmail.com", 666_333_1234L);
+		// theJerseyClient.readFile();
+		// LOG.info("new user Id=" + theJerseyClient.userCreate(anUser));
+		// LOG.info(theJerseyClient.getUserById(2));
+		// anUser = new User(2, "arnold", "Terminator", "machine", "arnold@gmail.com", 111_222_3456L);
+		// theJerseyClient.userUpdate(anUser);
+		// theJerseyClient.deleteUserById(3);
 		// theJerseyClient.sync();
+		LOG.info(theJerseyClient.testGetUserById(2));
+	}
 
+	private User testGetUserById(Integer iUserId) {
+		return _webResource.path("user").path("test").path(iUserId.toString()).type(MediaType.TEXT_PLAIN).accept(MediaType.APPLICATION_JSON).get(User.class);
 	}
 
 	// private void sync() {
@@ -187,11 +194,6 @@ public class JerseyClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private static URI getBaseURI() {
-		// CASE-SENSITIVE URI
-		return UriBuilder.fromUri("http://localhost:8080/api").build();
 	}
 
 }

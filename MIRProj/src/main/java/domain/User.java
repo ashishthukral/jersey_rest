@@ -5,7 +5,8 @@ import java.io.Serializable;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class User implements Serializable {
+// @XmlRootElement
+public class User {
 
 	private static final long serialVersionUID = 1L;
 

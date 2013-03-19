@@ -128,4 +128,15 @@ public class UserService {
 		}
 		return Response.status(Response.Status.ACCEPTED).entity(aResponseObjectJson).build();
 	}
+
+	@GET
+	@Path("test/{id}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public User testGetUserById(@PathParam("id") Integer iUserId) {
+		LOG.info("testGetUserById");
+		User anUser = UserDaoImpl.USER_DAO_INSTANCE.getUserById(iUserId);
+		anUser.setPhoneNumber(null);
+		return anUser;
+	}
 }
