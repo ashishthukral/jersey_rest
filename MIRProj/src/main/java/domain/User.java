@@ -86,7 +86,7 @@ public class User implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((emailAddress == null) ? 0 : emailAddress.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -99,10 +99,10 @@ public class User implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (emailAddress == null) {
-			if (other.emailAddress != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!emailAddress.equals(other.emailAddress))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

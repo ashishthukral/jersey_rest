@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -21,7 +21,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
-import common.CommonObjectMapper;
+import common.CommonUtil;
 
 import domain.ResponseObject;
 import domain.User;
@@ -29,7 +29,7 @@ import domain.User;
 public class JerseyClient {
 
 	private WebResource _webResource;
-	private final static ObjectMapper OBJECT_MAPPER = CommonObjectMapper.INSTANCE.getObjectMapper();
+	private final static ObjectMapper OBJECT_MAPPER = CommonUtil.INSTANCE.getObjectMapper();
 	private final static Logger LOG = Logger.getLogger(JerseyClient.class);
 
 	public JerseyClient() {
@@ -43,17 +43,17 @@ public class JerseyClient {
 		JerseyClient theJerseyClient = new JerseyClient();
 		theJerseyClient.readFile();
 		LOG.info("new user Id=" + theJerseyClient.userCreate());
-		LOG.info(theJerseyClient.getUserById(666));
-		theJerseyClient.userUpdate(987);
-		theJerseyClient.deleteUserById(123);
+		LOG.info(theJerseyClient.getUserById(2));
+		theJerseyClient.userUpdate(1);
+		theJerseyClient.deleteUserById(3);
 	}
 
-	private Set<User> readFile() {
+	private List<User> readFile() {
 		// HELPFUL TIP - use to print current path where executing
 		// System.out.println(new File(".").getAbsolutePath());
 		// Location of file to read
 		File file = new File("src/main/resources/users.txt");
-		Set<User> theUserSet = new HashSet<>();
+		List<User> theAcmeFileUserList = new ArrayList<>();
 		try {
 			User anUser;
 			Scanner scanner = new Scanner(file);
@@ -65,14 +65,14 @@ public class JerseyClient {
 					continue;
 				String[] userDetails = line.split(",");
 				anUser = new User(null, userDetails[0] + " " + userDetails[1], userDetails[0], userDetails[1], userDetails[2], Long.valueOf(userDetails[3]));
-				theUserSet.add(anUser);
+				theAcmeFileUserList.add(anUser);
 			}
 			scanner.close();
-			System.out.println(theUserSet);
+			System.out.println(theAcmeFileUserList);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		return theUserSet;
+		return theAcmeFileUserList;
 	}
 
 	private Integer userCreate() {

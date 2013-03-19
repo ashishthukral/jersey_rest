@@ -15,15 +15,16 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import common.CommonObjectMapper;
+import common.CommonUtil;
 
+import dao.UserDao;
 import domain.ResponseObject;
 import domain.User;
 
 @Path("/user")
 public class UserService {
 
-	private final static ObjectMapper OBJECT_MAPPER = CommonObjectMapper.INSTANCE.getObjectMapper();
+	private final static ObjectMapper OBJECT_MAPPER = CommonUtil.INSTANCE.getObjectMapper();
 	private final static Logger LOG = Logger.getLogger(UserService.class);
 
 	/*
@@ -39,13 +40,10 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUser(String iUserJson) {
 		LOG.info("createUser");
-		Integer theId = 333;
 		String aResponseObjectJson = "null";
 		try {
 			User anUser = OBJECT_MAPPER.readValue(iUserJson, User.class);
-			anUser.setId(theId);
-			// LOG.info(anUser);
-			// save(anUser);
+			Integer theId = UserDao.USER_DAO_INSTANCE.createUser(anUser);
 			anUser = new User();
 			anUser.setId(theId);
 			ResponseObject aResponseObject = new ResponseObject(anUser, "true");
@@ -68,8 +66,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserById(@PathParam("id") String iUserId) {
 		LOG.info("getUserById");
-		// LOG.info(iUserId);
-		User anUser = new User(Integer.valueOf(iUserId), "stallone", "john", "rambo", "rambo@gmail.com", 666_333_1234L);
+		User anUser = UserDao.USER_DAO_INSTANCE.getUserById(Integer.valueOf(iUserId));
 		String aResponseObjectJson = "null";
 		try {
 			ResponseObject aResponseObject = new ResponseObject(anUser, "true");
@@ -99,8 +96,7 @@ public class UserService {
 		try {
 			User anUser = OBJECT_MAPPER.readValue(iUserJson, User.class);
 			anUser.setId(theId);
-			// LOG.info(anUser);
-			// save(anUser);
+			UserDao.USER_DAO_INSTANCE.userUpdate(anUser);
 			ResponseObject aResponseObject = new ResponseObject(null, "true");
 			aResponseObjectJson = OBJECT_MAPPER.writeValueAsString(aResponseObject);
 			LOG.info(aResponseObjectJson);
@@ -121,8 +117,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteUserById(@PathParam("id") String iUserId) {
 		LOG.info("deleteUserById");
-		// LOG.info(iUserId);
-		// delete(iUserId)
+		UserDao.USER_DAO_INSTANCE.deleteUserById(Integer.valueOf(iUserId));
 		String aResponseObjectJson = "null";
 		try {
 			ResponseObject aResponseObject = new ResponseObject(null, "true");
